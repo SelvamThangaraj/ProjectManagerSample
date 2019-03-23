@@ -30,6 +30,17 @@ public class User implements Serializable{
 	@Column(name="employee_id")
 	String employeeId;
 	
+	public User(Long id,String firstName, String lastName, String empId) {	
+		this.userId=id;
+		this.firstName=firstName;
+		this.lastName=lastName;
+		this.employeeId=empId;
+	}	
+	
+	public User() {
+		super();		
+	}
+
 	public long getUserId() {
 		return userId;
 	}
