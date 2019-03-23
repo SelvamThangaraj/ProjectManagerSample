@@ -2,6 +2,8 @@ package com.ts.pm.controller;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -25,10 +27,12 @@ public class UserController {
 	
 	@Autowired
 	UserService userService;
+	
+	private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 
 	@PostMapping(path = "/user" ,consumes = "application/json", produces = "application/json")
 	public ResponseEntity<User> addUser(@RequestBody User user, UriComponentsBuilder builder) {
-		System.out.println("user=>"+user);
+		LOGGER.debug("user=>"+user);
 		User addedUser=userService.saveOrUpdateUser(user);
 		if(null==addedUser) {
 			return new ResponseEntity<User>(HttpStatus.CONFLICT);
@@ -41,14 +45,14 @@ public class UserController {
 	
 	@PutMapping(path = "/user" ,consumes = "application/json", produces = "application/json")
 	public User updateUser(@RequestBody User user) {
-		System.out.println("user=>"+user);
+		LOGGER.debug("user=>"+user);
 		User addedUser=userService.saveOrUpdateUser(user);
 		return addedUser;
 	}
 	
 	@GetMapping(path = "/user/{id}" ,produces = "application/json")
 	public User getUser(@PathVariable("id") Long id) {
-		System.out.println("id=>"+id);
+		LOGGER.debug("id=>"+id);
 		User addedUser=userService.getUser(id);
 		return addedUser;
 	}
@@ -56,13 +60,13 @@ public class UserController {
 	@GetMapping(path = "/users" ,produces = "application/json")
 	public List<User> getAllUsers() {		
 		List<User> listUsers=userService.getAllUsers();
-		System.out.println("listUsers=>"+listUsers);
+		LOGGER.debug("listUsers=>"+listUsers);
 		return listUsers;
 	}
 	
 	@DeleteMapping("/user/{id}")
 	public ResponseEntity<Long> deleteUser(@PathVariable("id") Long id) {
-		System.out.println("Delete id=>"+id);
+		LOGGER.debug("Delete id=>"+id);
 		Long deletedUserid=userService.deleteUser(id);
 		return new ResponseEntity<Long>(deletedUserid,HttpStatus.NO_CONTENT);
 	}	

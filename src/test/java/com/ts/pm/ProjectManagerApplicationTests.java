@@ -9,6 +9,8 @@ import static org.hamcrest.Matchers.equalTo;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
@@ -26,6 +28,8 @@ import com.ts.pm.model.User;
 @TestPropertySource(value={"classpath:application.properties"})
 @SpringBootTest(webEnvironment = WebEnvironment.DEFINED_PORT)
 public class ProjectManagerApplicationTests {
+	
+	private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 
 	@Value("${server.port}")   
     int port;
@@ -53,7 +57,7 @@ public class ProjectManagerApplicationTests {
 				.when()
 				.post("/pm/user");
 		
-		System.out.println("POST Response\n" + response.asString());
+		LOGGER.info("POST Response\n" + response.asString());
 	
 		// tests
 		response.then().body("firstName", equalTo("Aaradhana"));		
@@ -84,16 +88,16 @@ public class ProjectManagerApplicationTests {
 				.when()
 				.put("/pm/user");
 		
-		System.out.println("PUT Response\n" + response.asString());
+		LOGGER.info("PUT Response\n" + response.asString());
 		// tests
 		response.then().body("lastName", equalTo("SelvamSubathra"));		
 	}
 	
 	@Test
 	public void deleteDataTest() {
-		Response response = delete("/pm/user/9");
+		Response response = delete("/pm/user/11");
 		
-		System.out.println("DELETE Response\n" + response.asString());
+		LOGGER.info("DELETE Response\n" + response.asString());
 		// tests
 		response.then().statusCode(204);
 		
@@ -102,10 +106,8 @@ public class ProjectManagerApplicationTests {
 	@Test
 	public void listAllDataTest() {
 		Response response= get("/pm/users");
-		System.out.println("LIST Users Response\n" + response.asString());
+		LOGGER.info("LIST Users Response\n" + response.asString());
 		response.then().body("userId", hasItems(1, 2));
 	}
-
-	
 
 }
