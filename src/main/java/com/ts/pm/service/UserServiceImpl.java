@@ -1,31 +1,45 @@
 package com.ts.pm.service;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.ts.pm.dao.UserDAO;
 import com.ts.pm.model.User;
 
+@Service
 public class UserServiceImpl implements UserService {
 
-	@Override
-	public User addUser(User user) {
-		// TODO Auto-generated method stub
-		return null;
+	@Autowired
+	UserDAO userDao;
+	
+	@Override	
+	public User saveOrUpdateUser(User user) {
+		
+		User savedUser=userDao.save(user);
+		return savedUser;
 	}
 
 	@Override
 	public User getUser(long userId) {
-		// TODO Auto-generated method stub
-		return null;
+		User user=userDao.findById(userId).orElse(null);
+		return user;
 	}
-
-	@Override
-	public User updateUser(User user) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
+	
 	@Override
 	public long deleteUser(long userId) {
-		// TODO Auto-generated method stub
-		return 0;
+		userDao.deleteById(userId);
+		return userId;
+	}
+
+	@Override
+	public List<User> getAllUsers() {
+		Iterable<User> iterableUsers=userDao.findAll();
+		List<User> userList=new ArrayList<User>();
+		iterableUsers.spliterator().forEachRemaining(user->userList.add(user));
+		return userList;
 	}
 
 }
