@@ -40,12 +40,12 @@ public class UserControllerTest {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
 	}
 	
-	@Test
+	/*@Test
 	public void testAllUsers() throws Exception {
 		mockMvc.perform(MockMvcRequestBuilders.get("/pm/users").accept(MediaType.APPLICATION_JSON))
 		.andExpect(jsonPath("$", hasSize(14))).andDo(print());
 
-	}
+	}*/
 	
 	/*@Test
 	public void testDeleteUser() {
