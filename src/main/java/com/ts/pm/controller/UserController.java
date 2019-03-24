@@ -71,5 +71,10 @@ public class UserController {
 		return new ResponseEntity<Long>(deletedUserid,HttpStatus.NO_CONTENT);
 	}	
 	
-
+	@GetMapping(path = "/users/sort/{attr}" ,produces = "application/json")
+	public List<User> sortByAttr(@PathVariable("attr") String attr) {		
+		List<User> listUsers=userService.sortByAttr(attr);
+		LOGGER.debug("listUsers=>"+listUsers);
+		return listUsers;
+	}
 }

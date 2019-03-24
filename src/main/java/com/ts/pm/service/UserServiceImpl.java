@@ -3,6 +3,8 @@ package com.ts.pm.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +14,7 @@ import com.ts.pm.model.User;
 @Service
 public class UserServiceImpl implements UserService {
 
+	private final Logger LOGGER=LoggerFactory.getLogger(this.getClass());
 	@Autowired
 	UserDAO userDao;
 	
@@ -39,6 +42,22 @@ public class UserServiceImpl implements UserService {
 		Iterable<User> iterableUsers=userDao.findAll();
 		List<User> userList=new ArrayList<User>();
 		iterableUsers.spliterator().forEachRemaining(user->userList.add(user));
+		return userList;
+	}
+
+	@Override
+	public List<User> sortByAttr(String attribute) {
+		LOGGER.debug("Service sortByAttr=>"+attribute);
+		List<User> userList=getAllUsers();	
+		LOGGER.debug("Service sortByAttr userCount=>"+userList.size());
+		if("firstName".equalsIgnoreCase(attribute)) {			
+			userList.sort((User u1,User u2)->u1.getFirstName().compareTo(u2.getFirstName()));
+		}else if("lastName".equalsIgnoreCase(attribute)) {
+			userList.sort((User u1,User u2)->u2.getLastName().compareTo(u1.getLastName()));
+		}else if("employeeId".equalsIgnoreCase(attribute)) {
+			userList.sort((User u1,User u2)->u2.getEmployeeId().compareTo(u1.getEmployeeId()));
+		}	
+		LOGGER.debug("Service sortByAttr sorted list=>"+userList.toString());
 		return userList;
 	}
 

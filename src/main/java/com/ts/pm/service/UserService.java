@@ -10,5 +10,6 @@ public interface UserService {
 	User getUser(long userId);	
 	long deleteUser(long userId);
 	List<User> getAllUsers();
+	List<User> sortByAttr(String attribute);
 	
 }
