@@ -22,7 +22,6 @@ import com.ts.pm.model.User;
 import com.ts.pm.service.UserService;
 
 @RestController
-@RequestMapping("/pm")
 public class UserController {
 	
 	@Autowired
@@ -44,24 +43,24 @@ public class UserController {
 	}
 	
 	@PutMapping(path = "/user" ,consumes = "application/json", produces = "application/json")
-	public User updateUser(@RequestBody User user) {
+	public ResponseEntity<User> updateUser(@RequestBody User user) {
 		LOGGER.debug("user=>"+user);
-		User addedUser=userService.saveOrUpdateUser(user);
-		return addedUser;
+		User updatedUser=userService.saveOrUpdateUser(user);
+		return new ResponseEntity<User>(updatedUser,HttpStatus.OK);
 	}
 	
 	@GetMapping(path = "/user/{id}" ,produces = "application/json")
-	public User getUser(@PathVariable("id") Long id) {
+	public ResponseEntity<User> getUser(@PathVariable("id") Long id) {
 		LOGGER.debug("id=>"+id);
 		User addedUser=userService.getUser(id);
-		return addedUser;
+		return new ResponseEntity<User>(addedUser,HttpStatus.OK);
 	}
 	
 	@GetMapping(path = "/users" ,produces = "application/json")
-	public List<User> getAllUsers() {		
+	public ResponseEntity<List<User>> getAllUsers() {		
 		List<User> listUsers=userService.getAllUsers();
 		LOGGER.debug("listUsers=>"+listUsers);
-		return listUsers;
+		return new ResponseEntity<List<User>>(listUsers,HttpStatus.OK);
 	}
 	
 	@DeleteMapping("/user/{id}")
@@ -72,9 +71,9 @@ public class UserController {
 	}	
 	
 	@GetMapping(path = "/users/sort/{attr}" ,produces = "application/json")
-	public List<User> sortByAttr(@PathVariable("attr") String attr) {		
+	public ResponseEntity<List<User>> sortByAttr(@PathVariable("attr") String attr) {		
 		List<User> listUsers=userService.sortByAttr(attr);
 		LOGGER.debug("listUsers=>"+listUsers);
-		return listUsers;
+		return new ResponseEntity<List<User>>(listUsers,HttpStatus.OK);
 	}
 }

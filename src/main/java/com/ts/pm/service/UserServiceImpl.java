@@ -53,9 +53,9 @@ public class UserServiceImpl implements UserService {
 		if("firstName".equalsIgnoreCase(attribute)) {			
 			userList.sort((User u1,User u2)->u1.getFirstName().compareTo(u2.getFirstName()));
 		}else if("lastName".equalsIgnoreCase(attribute)) {
-			userList.sort((User u1,User u2)->u2.getLastName().compareTo(u1.getLastName()));
+			userList.sort((User u1,User u2)->u1.getLastName().compareTo(u2.getLastName()));
 		}else if("employeeId".equalsIgnoreCase(attribute)) {
-			userList.sort((User u1,User u2)->u2.getEmployeeId().compareTo(u1.getEmployeeId()));
+			userList.sort((User u1,User u2)->u1.getEmployeeId().compareTo(u2.getEmployeeId()));
 		}	
 		LOGGER.debug("Service sortByAttr sorted list=>"+userList.toString());
 		return userList;
