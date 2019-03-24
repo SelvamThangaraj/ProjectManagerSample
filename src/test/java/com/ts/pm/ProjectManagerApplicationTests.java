@@ -109,5 +109,13 @@ public class ProjectManagerApplicationTests {
 		LOGGER.info("LIST Users Response\n" + response.asString());
 		response.then().body("userId", hasItems(1, 2));
 	}
+	
+	@Test
+	public void sortByAttrTest() {
+		Response response= get("/pm/users/sort/firtName");
+		LOGGER.info("LIST Users Response\n" + response.asString());
+		response.then().body("userId", hasItems(1, 2));
+	}
+	
 
 }
