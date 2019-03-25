@@ -1,12 +1,11 @@
 package com.ts.pm;
 
-import static com.jayway.restassured.RestAssured.given;
-import static com.jayway.restassured.RestAssured.get;
 import static com.jayway.restassured.RestAssured.delete;
+import static com.jayway.restassured.RestAssured.get;
+import static com.jayway.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertEquals;
-
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -34,25 +33,27 @@ import com.jayway.restassured.RestAssured;
 import com.jayway.restassured.http.ContentType;
 import com.jayway.restassured.response.Response;
 import com.jayway.restassured.response.ResponseBody;
+import com.ts.pm.model.ParentTask;
 import com.ts.pm.model.Project;
+import com.ts.pm.model.Task;
 
 @RunWith(SpringJUnit4ClassRunner.class)   
 @ContextConfiguration(classes = ProjectManagerApplication.class)  
 @TestPropertySource(value={"classpath:application.properties"})
 @SpringBootTest(webEnvironment = WebEnvironment.DEFINED_PORT)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class ProjectControllerTDD {
+public class TaskControllerTDD {
 	
 	private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 
 	@Value("${server.port}")   
     int port;
 	
-	//used to build /pm/project/1
-	static StringBuilder sbForProjectIdPath=new StringBuilder("/pm/project/");
+	//used to build /pm/task/1
+	static StringBuilder sbForTaskIdPath=new StringBuilder("/pm/task/");
 		
-	//Newly added project, which will be used to test GET,UPDATE,DELETE 
-	static long addedProjectid;
+	//Newly added task, which will be used to test GET,UPDATE,DELETE 
+	static long addedTaskid;
 	
 	@Before
 	public void setBaseUri () {
@@ -66,87 +67,103 @@ public class ProjectControllerTDD {
 	@Test
 	public void Test1postData() throws JsonParseException, JsonMappingException, IOException {
 		
+		Task task=new Task();
+		task.setTask("AaradhanaTask");
+		task.setStartDate(LocalDate.now());
+		task.setEndDate(LocalDate.now().plusDays(1));
+		task.setPriority(5);
+		task.setStatus("Completed");
+		//Create new Project
 		Project project=new Project();
-		project.setProjectTitle("AaradhanaProject");
+		project.setProjectId(Long.valueOf(999));
+		project.setProjectTitle("NewProjectCreatedForTask");
 		project.setStartDate(LocalDate.now());
 		project.setEndDate(LocalDate.now().plusDays(1));
 		project.setPriority(5);
+		task.setProject(project);
+		
+		//Create new Parent Task
+		ParentTask parentTask=new ParentTask();
+		parentTask.setParentId(Long.valueOf(1));
+		parentTask.setParentTask("PrentTask1");
+		task.setParentTask(parentTask);
+		
 		Response response = given().
 				contentType(ContentType.JSON)
 				.accept(ContentType.JSON)
-				.body(project)
+				.body(task)
 				.when()
-				.post("/pm/project");
+				.post("/pm/task");
 		
 		LOGGER.info("POST Response\n" + response.asString());
-		Project addedProject = ConvertResponseToProjectObject(response);
+		Task addedTask = ConvertResponseToTaskObject(response);
 		
-		addedProjectid=addedProject.getProjectId();
-		LOGGER.info("POST Response addedProjectid=>" + addedProjectid);
+		addedTaskid=addedTask.getTaskId();
+		LOGGER.info("POST Response addedTaskid=>" + addedTaskid);
 		// tests
-		response.then().body("projectTitle", equalTo("AaradhanaProject"));		
+		response.then().body("task", equalTo("AaradhanaTask"));		
 	}
 
 	
 	@Test
 	public void Test2getData() throws JsonParseException, JsonMappingException, IOException {
-		//System.out.println(get("/pm/project/1").asString());
-		//get("/pm/project/1").then().assertThat().body("firstName", equalTo("Parthiban"));
+		//System.out.println(get("/pm/task/1").asString());
+		//get("/pm/task/1").then().assertThat().body("firstName", equalTo("Parthiban"));
 		
-		sbForProjectIdPath.append(addedProjectid);
-		LOGGER.debug("this.sbForProjectIdPath=>"+sbForProjectIdPath.toString());
-		Response response=get(sbForProjectIdPath.toString());
+		sbForTaskIdPath.append(addedTaskid);
+		LOGGER.debug("this.sbForTaskIdPath=>"+sbForTaskIdPath.toString());
+		Response response=get(sbForTaskIdPath.toString());
 		LOGGER.info("GET Response\n" + response.asString());
-		Project project = ConvertResponseToProjectObject(response);
-		assertEquals(project.getProjectId(),Long.valueOf(addedProjectid));
-		//response.then().assertThat().body(String.valueOf("projectId").trim(), equalTo("AaradhanaProject"));
-		//get("/pm/project/1").then().assertThat().body("projectId", equalTo("1"));
+		Task task = ConvertResponseToTaskObject(response);
+		assertEquals(task.getTaskId(),Long.valueOf(addedTaskid));
+		//response.then().assertThat().body(String.valueOf("taskId").trim(), equalTo("AaradhanaTask"));
+		//get("/pm/task/1").then().assertThat().body("taskId", equalTo("1"));
 		//given().request().body("some body").post()		
 	}
 	
 	@Test
 	public void Test3PutData() {
 		
-		Project project=new Project();
-		project.setProjectId(addedProjectid);
-		project.setProjectTitle("AaradhanaProjectUpdated");
-		project.setStartDate(LocalDate.now());
-		project.setEndDate(LocalDate.now().plusDays(1));
-		project.setPriority(5);
+		Task task=new Task();
+		task.setTaskId(addedTaskid);
+		task.setTask("AaradhanaTaskUpdated");
+		task.setStartDate(LocalDate.now());
+		task.setEndDate(LocalDate.now().plusDays(1));
+		task.setPriority(5);
 		
 		Response response = given().
 				contentType(ContentType.JSON)
 				.accept(ContentType.JSON)
-				.body(project)
+				.body(task)
 				.when()
-				.put("/pm/project");
+				.put("/pm/task");
 		
 		LOGGER.info("PUT Response\n" + response.asString());
 		// tests
-		response.then().body("projectTitle", equalTo("AaradhanaProjectUpdated"));		
+		response.then().body("taskTitle", equalTo("AaradhanaTaskUpdated"));		
 	}
 	
 	
 	
 	@Test
 	public void Test4ListAllData() {
-		Response response= get("/pm/projects");
-		LOGGER.info("LIST Projects Response\n" + response.asString());
-		response.then().body("projectTitle", hasItems("AaradhanaProjectUpdated"));
+		Response response= get("/pm/tasks");
+		LOGGER.info("LIST Tasks Response\n" + response.asString());
+		response.then().body("taskTitle", hasItems("AaradhanaTaskUpdated"));
 	}
 	
 	
 	@Test
 	public void Test5SortByAttr() {
-		Response response= get("/pm/projects/sort/projectTitle");
-		LOGGER.info("LIST Projects Response\n" + response.asString());
-		response.then().body("projectTitle", hasItems("AaradhanaProjectUpdated"));
+		Response response= get("/pm/tasks/sort/taskTitle");
+		LOGGER.info("LIST Tasks Response\n" + response.asString());
+		response.then().body("taskTitle", hasItems("AaradhanaTaskUpdated"));
 	}
 
 	//@Test
 	public void Test6deleteData() {
-		LOGGER.info("DELETE path =>" + sbForProjectIdPath.toString());
-		Response response = delete(sbForProjectIdPath.toString());
+		LOGGER.info("DELETE path =>" + sbForTaskIdPath.toString());
+		Response response = delete(sbForTaskIdPath.toString());
 		
 		LOGGER.info("DELETE Response=>" + response.asString());
 		// tests
@@ -154,14 +171,14 @@ public class ProjectControllerTDD {
 	}
 	
 
-	private Project ConvertResponseToProjectObject(Response response)
+	private Task ConvertResponseToTaskObject(Response response)
 			throws IOException, JsonParseException, JsonMappingException {
 		ResponseBody responseBody=response.body();
 		ObjectMapper mapper = new ObjectMapper();		
         mapper.registerModule(new JavaTimeModule());
         mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
-		Project addedProject=mapper.readValue(responseBody.asString(), Project.class);
-		return addedProject;
+		Task addedTask=mapper.readValue(responseBody.asString(), Task.class);
+		return addedTask;
 	}
 
 }

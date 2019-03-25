@@ -1,12 +1,15 @@
 package com.ts.pm.model;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -35,8 +38,10 @@ public class Project {
 	@Column(name="priority")
 	int priority;
 
-	
-
+	/*@OneToMany( targetEntity=Task.class )
+	@JoinColumn(name="task_id")
+	List<Task> listTask;
+*/
 	public Long getProjectId() {
 		return projectId;
 	}
@@ -76,6 +81,15 @@ public class Project {
 	public void setPriority(int priority) {
 		this.priority = priority;
 	}
+
+	
+	/*public List<Task> getListTask() {
+		return listTask;
+	}
+
+	public void setListTask(List<Task> listTask) {
+		this.listTask = listTask;
+	}*/
 
 	public Project(long projectID, String projectTitle, LocalDate startDate, LocalDate endDate, int priority) {
 		super();

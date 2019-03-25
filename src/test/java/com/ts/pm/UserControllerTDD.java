@@ -1,16 +1,15 @@
 package com.ts.pm;
 
+import static com.jayway.restassured.RestAssured.delete;
 import static com.jayway.restassured.RestAssured.get;
 import static com.jayway.restassured.RestAssured.given;
-import static com.jayway.restassured.RestAssured.delete;
-import static com.jayway.restassured.RestAssured.put;
 import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertEquals;
 
-
 import java.io.IOException;
 
+import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -84,7 +83,8 @@ public class UserControllerTDD {
 		addedUserid=addedUser.getUserId();
 		LOGGER.info("POST Response addedUserid=>" + addedUserid);
 		// tests
-		response.then().body("firstName", equalTo("Aaradhana"));		
+		response.then().body("firstName", equalTo("Aaradhana"));
+		
 	}
 
 	
