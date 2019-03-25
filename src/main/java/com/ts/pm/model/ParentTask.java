@@ -1,16 +1,12 @@
 package com.ts.pm.model;
 
 import java.io.Serializable;
-import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -28,11 +24,7 @@ public class ParentTask implements Serializable{
 	
 	@Column(name="parent_task")
 	String parentTask;
-
-	/*@OneToMany( targetEntity=Task.class )
-	@JoinColumn
-	List<Task> listTask;*/
-	
+		
 	public Long getParentId() {
 		return parentId;
 	}
@@ -49,14 +41,6 @@ public class ParentTask implements Serializable{
 		this.parentTask = parentTask;
 	}
 	
-	/*public List<Task> getListTask() {
-		return listTask;
-	}
-
-	public void setListTask(List<Task> listTask) {
-		this.listTask = listTask;
-	}*/
-
 	public ParentTask(Long parentId, String parentTask) {
 		super();
 		this.parentId = parentId;

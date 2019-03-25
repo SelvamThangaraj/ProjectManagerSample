@@ -27,16 +27,11 @@ public class Task implements Serializable {
 	@Column(name="task_id")
 	Long taskId;
 	
-	/*@Column(name="parent_id")
-	Long parent_id;*/
-	
-	@ManyToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name="parent_id")	
-	ParentTask parentTask;
-	
-	@ManyToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name="project_id")	
-	Project project;
+	@Column(name="parent_id")
+	Long parentId;
+		
+    @Column(name="project_id")	
+	Long projectId;
 	
 	@Column(name="task")
 	String task;
@@ -54,8 +49,22 @@ public class Task implements Serializable {
 	String status;
 	
 	
-	
-	
+	public Long getParentId() {
+		return parentId;
+	}
+
+	public void setParentId(Long parentId) {
+		this.parentId = parentId;
+	}
+
+	public Long getProjectId() {
+		return projectId;
+	}
+
+	public void setProjectId(Long projectId) {
+		this.projectId = projectId;
+	}
+
 	public Long getTaskId() {
 		return taskId;
 	}
@@ -64,21 +73,7 @@ public class Task implements Serializable {
 		this.taskId = taskId;
 	}
 
-	public ParentTask getParentTask() {
-		return parentTask;
-	}
 
-	public void setParentTask(ParentTask parentTask) {
-		this.parentTask = parentTask;
-	}
-
-	public Project getProject() {
-		return project;
-	}
-
-	public void setProject(Project project) {
-		this.project = project;
-	}
 
 	public String getTask() {
 		return task;

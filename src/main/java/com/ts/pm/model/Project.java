@@ -38,10 +38,7 @@ public class Project {
 	@Column(name="priority")
 	int priority;
 
-	/*@OneToMany( targetEntity=Task.class )
-	@JoinColumn(name="task_id")
-	List<Task> listTask;
-*/
+	
 	public Long getProjectId() {
 		return projectId;
 	}
@@ -83,14 +80,7 @@ public class Project {
 	}
 
 	
-	/*public List<Task> getListTask() {
-		return listTask;
-	}
-
-	public void setListTask(List<Task> listTask) {
-		this.listTask = listTask;
-	}*/
-
+	
 	public Project(long projectID, String projectTitle, LocalDate startDate, LocalDate endDate, int priority) {
 		super();
 		this.projectId = projectID;

@@ -8,7 +8,6 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
-import java.time.LocalDate;
 
 import org.junit.Before;
 import org.junit.FixMethodOrder;
@@ -34,15 +33,13 @@ import com.jayway.restassured.http.ContentType;
 import com.jayway.restassured.response.Response;
 import com.jayway.restassured.response.ResponseBody;
 import com.ts.pm.model.ParentTask;
-import com.ts.pm.model.Project;
-import com.ts.pm.model.Task;
 
 @RunWith(SpringJUnit4ClassRunner.class)   
 @ContextConfiguration(classes = ProjectManagerApplication.class)  
 @TestPropertySource(value={"classpath:application.properties"})
 @SpringBootTest(webEnvironment = WebEnvironment.DEFINED_PORT)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class TaskControllerTDD {
+public class ParentTaskControllerTDD {
 	
 	private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 
@@ -50,10 +47,10 @@ public class TaskControllerTDD {
     int port;
 	
 	//used to build /pm/task/1
-	static StringBuilder sbForTaskIdPath=new StringBuilder("/pm/task/");
+	static StringBuilder sbForParentTaskIdPath=new StringBuilder("/pm/parenttask/");
 		
 	//Newly added task, which will be used to test GET,UPDATE,DELETE 
-	static long addedTaskid;
+	static long addedParentTaskid;
 	
 	@Before
 	public void setBaseUri () {
@@ -67,13 +64,8 @@ public class TaskControllerTDD {
 	@Test
 	public void Test1postData() throws JsonParseException, JsonMappingException, IOException {
 		
-		Task task=new Task();
-		task.setTask("AaradhanaTask");
-		task.setStartDate(LocalDate.now());
-		task.setEndDate(LocalDate.now().plusDays(1));
-		task.setPriority(5);
-		task.setStatus("Completed");
-		task.setProjectId(Long.valueOf(1));			
+		ParentTask task=new ParentTask();
+		task.setParentTask("AaradhanaParentTask");				
 		task.setParentId(Long.valueOf(1));
 		
 		Response response = given().
@@ -81,73 +73,61 @@ public class TaskControllerTDD {
 				.accept(ContentType.JSON)
 				.body(task)
 				.when()
-				.post("/pm/task");
+				.post("/pm/parenttask");
 		
 		LOGGER.info("POST Response\n" + response.asString());
-		Task addedTask = ConvertResponseToTaskObject(response);
+		ParentTask addedParentTask = ConvertResponseToParentTaskObject(response);
 		
-		addedTaskid=addedTask.getTaskId();
-		LOGGER.info("POST Response addedTaskid=>" + addedTaskid);
+		addedParentTaskid=addedParentTask.getParentId();
+		LOGGER.info("POST Response addedParentTaskid=>" + addedParentTaskid);
 		// tests
-		response.then().body("task", equalTo("AaradhanaTask"));		
+		response.then().body("parentTask", equalTo("AaradhanaParentTask"));		
 	}
 
 	
 	@Test
 	public void Test2getData() throws JsonParseException, JsonMappingException, IOException {
 				
-		sbForTaskIdPath.append(addedTaskid);
-		LOGGER.debug("this.sbForTaskIdPath=>"+sbForTaskIdPath.toString());
-		Response response=get(sbForTaskIdPath.toString());
+		sbForParentTaskIdPath.append(addedParentTaskid);
+		LOGGER.debug("this.sbForParentTaskIdPath=>"+sbForParentTaskIdPath.toString());
+		Response response=get(sbForParentTaskIdPath.toString());
 		LOGGER.info("GET Response\n" + response.asString());
-		Task task = ConvertResponseToTaskObject(response);
-		assertEquals(task.getTaskId(),Long.valueOf(addedTaskid));
+		ParentTask task = ConvertResponseToParentTaskObject(response);
+		assertEquals(task.getParentId(),Long.valueOf(addedParentTaskid));
 			
 	}
 	
 	@Test
 	public void Test3PutData() {
 		
-		Task task=new Task();
-		task.setTaskId(addedTaskid);
-		task.setTask("AaradhanaTaskUpdated");
-		task.setStartDate(LocalDate.now());
-		task.setEndDate(LocalDate.now().plusDays(1));
-		task.setPriority(5);
+		ParentTask task=new ParentTask();		
+		task.setParentTask("AaradhanaParentTaskUpdated");
 		
 		Response response = given().
 				contentType(ContentType.JSON)
 				.accept(ContentType.JSON)
 				.body(task)
 				.when()
-				.put("/pm/task");
+				.put("/pm/parenttask");
 		
 		LOGGER.info("PUT Response\n" + response.asString());
 		// tests
-		response.then().body("task", equalTo("AaradhanaTaskUpdated"));		
+		response.then().body("parentTask", equalTo("AaradhanaParentTaskUpdated"));		
 	}
 	
 	
 	
 	@Test
 	public void Test4ListAllData() {
-		Response response= get("/pm/tasks");
-		LOGGER.info("LIST Tasks Response\n" + response.asString());
-		response.then().body("task", hasItems("AaradhanaTaskUpdated"));
+		Response response= get("/pm/parenttasks");
+		LOGGER.info("LIST ParentTasks Response\n" + response.asString());
+		response.then().body("parentTask", hasItems("AaradhanaParentTaskUpdated"));
 	}
 	
-	
-	@Test
-	public void Test5SortByAttr() {
-		Response response= get("/pm/tasks/sort/taskTitle");
-		LOGGER.info("LIST Tasks Response\n" + response.asString());
-		response.then().body("task", hasItems("AaradhanaTaskUpdated"));
-	}
-
 	@Test
 	public void Test6deleteData() {
-		LOGGER.info("DELETE path =>" + sbForTaskIdPath.toString());
-		Response response = delete(sbForTaskIdPath.toString());
+		LOGGER.info("DELETE path =>" + sbForParentTaskIdPath.toString());
+		Response response = delete(sbForParentTaskIdPath.toString());
 		
 		LOGGER.info("DELETE Response=>" + response.asString());
 		// tests
@@ -155,14 +135,14 @@ public class TaskControllerTDD {
 	}
 	
 
-	private Task ConvertResponseToTaskObject(Response response)
+	private ParentTask ConvertResponseToParentTaskObject(Response response)
 			throws IOException, JsonParseException, JsonMappingException {
 		ResponseBody responseBody=response.body();
 		ObjectMapper mapper = new ObjectMapper();		
         mapper.registerModule(new JavaTimeModule());
         mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
-		Task addedTask=mapper.readValue(responseBody.asString(), Task.class);
-		return addedTask;
+		ParentTask addedParentTask=mapper.readValue(responseBody.asString(), ParentTask.class);
+		return addedParentTask;
 	}
 
 }
