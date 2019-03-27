@@ -10,6 +10,8 @@ public interface TaskService {
 	Task getTask(long taskId);	
 	long deleteTask(long taskId);
 	List<Task> getAllTasks();
+	List<Task> getTasksByProjectid(Long projectId);
 	List<Task> sortByAttr(String attribute);
-
+	
+	
 }

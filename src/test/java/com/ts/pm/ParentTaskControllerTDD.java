@@ -66,7 +66,7 @@ public class ParentTaskControllerTDD {
 		
 		ParentTask task=new ParentTask();
 		task.setParentTask("AaradhanaParentTask");				
-		task.setParentId(Long.valueOf(1));
+		//task.setParentId(Long.valueOf(1));
 		
 		Response response = given().
 				contentType(ContentType.JSON)
@@ -120,11 +120,11 @@ public class ParentTaskControllerTDD {
 	@Test
 	public void Test4ListAllData() {
 		Response response= get("/pm/parenttasks");
-		LOGGER.info("LIST ParentTasks Response\n" + response.asString());
+		LOGGER.info("Map ParentTasks Response\n" + response.asString());
 		response.then().body("parentTask", hasItems("AaradhanaParentTaskUpdated"));
 	}
 	
-	@Test
+	//@Test
 	public void Test6deleteData() {
 		LOGGER.info("DELETE path =>" + sbForParentTaskIdPath.toString());
 		Response response = delete(sbForParentTaskIdPath.toString());

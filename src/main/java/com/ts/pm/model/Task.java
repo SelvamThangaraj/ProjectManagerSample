@@ -3,16 +3,15 @@ package com.ts.pm.model;
 import java.io.Serializable;
 import java.time.LocalDate;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+
+import org.springframework.data.annotation.Transient;
 
 @Entity
 @Table(name = "Task")
@@ -29,6 +28,9 @@ public class Task implements Serializable {
 	
 	@Column(name="parent_id")
 	Long parentId;
+	
+	@Transient
+	String parentTaskTitle;
 		
     @Column(name="project_id")	
 	Long projectId;
@@ -113,6 +115,16 @@ public class Task implements Serializable {
 
 	public void setStatus(String status) {
 		this.status = status;
+	}
+	
+	
+
+	public String getParentTaskTitle() {
+		return parentTaskTitle;
+	}
+
+	public void setParentTaskTitle(String parentTaskTitle) {
+		this.parentTaskTitle = parentTaskTitle;
 	}
 
 	public Task() {	}

@@ -1,6 +1,7 @@
 package com.ts.pm.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,10 +56,10 @@ public class ParentTaskController {
 	}
 	
 	@GetMapping(path = "/parenttasks" ,produces = "application/json")
-	public ResponseEntity<List<ParentTask>> getAllParentTasks() {		
-		List<ParentTask> listTasks=taskService.getAllParentTasks();
-		LOGGER.debug("listTasks=>"+listTasks);
-		return new ResponseEntity<List<ParentTask>>(listTasks,HttpStatus.OK);
+	public ResponseEntity<Map<Long,String>> getAllParentTasks() {		
+		Map<Long,String> mapParentTasks=taskService.getAllParentTasks();
+		LOGGER.debug("mapParentTasks=>"+mapParentTasks);
+		return new ResponseEntity<Map<Long,String>>(mapParentTasks,HttpStatus.OK);
 	}
 	
 	@DeleteMapping("/parenttask/{id}")

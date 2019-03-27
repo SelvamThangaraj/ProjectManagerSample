@@ -68,13 +68,13 @@ public class TaskControllerTDD {
 	public void Test1postData() throws JsonParseException, JsonMappingException, IOException {
 		
 		Task task=new Task();
-		task.setTask("AaradhanaTask");
+		task.setTask("Task-105");
 		task.setStartDate(LocalDate.now());
 		task.setEndDate(LocalDate.now().plusDays(1));
 		task.setPriority(5);
-		task.setStatus("Completed");
+		task.setStatus("Started");
 		task.setProjectId(Long.valueOf(1));			
-		task.setParentId(Long.valueOf(1));
+		task.setParentId(Long.valueOf(6));
 		
 		Response response = given().
 				contentType(ContentType.JSON)

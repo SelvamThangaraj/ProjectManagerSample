@@ -2,6 +2,7 @@ package com.ts.pm.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.ts.pm.dao.TaskDAO;
+import com.ts.pm.model.ParentTask;
 import com.ts.pm.model.Task;
 
 @Service
@@ -18,8 +20,10 @@ public class TaskServiceImpl implements TaskService {
 	
 	@Autowired
     TaskDAO taskDao;
+		
+	@Autowired
+	ParentTaskService parentTaskService;
 	
-
 	public TaskServiceImpl() {
 		
 	}
@@ -45,8 +49,21 @@ public class TaskServiceImpl implements TaskService {
 	@Override
 	public List<Task> getAllTasks() {
 		Iterable<Task> iterableTask=taskDao.findAll();
+		
+		//Get map of parentTaskId,parentTaskTitle of ParentTasks
+		Map<Long,String> mapParentTask=parentTaskService.getAllParentTasks();
+		
 		List<Task> listTask=new ArrayList<Task>();
-		iterableTask.spliterator().forEachRemaining(task->listTask.add(task));;
+		
+		//add the ParentTaskTitle to the Task
+		iterableTask.spliterator().forEachRemaining(
+				task->{
+					if(null!=task.getParentId()) {
+						task.setParentTaskTitle(mapParentTask.get(task.getParentId()));
+					}					
+					listTask.add(task);			
+		        }	
+		);
 		return listTask;
 	}
 
@@ -67,5 +84,26 @@ public class TaskServiceImpl implements TaskService {
 		LOGGER.debug("Service task sortByAttr sorted list=>"+taskList.toString());
 		return taskList;
 	}
+
+	@Override
+	public List<Task> getTasksByProjectid(Long projectId) {
+		List <Task> listTask=taskDao.findByProjectId(projectId);
+		
+		//Get map of parentTaskId,parentTaskTitle of ParentTasks
+		Map<Long,String> mapParentTask=parentTaskService.getAllParentTasks();
+		
+		listTask.stream().forEach(task->{
+					if(null!=task.getParentId()) {
+						task.setParentTaskTitle(mapParentTask.get(task.getParentId()));
+					}								
+		        }	
+		);
+		
+		
+		return listTask;
+	}
+
+	
+	
 
 }

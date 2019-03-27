@@ -1,7 +1,9 @@
 package com.ts.pm.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,11 +42,11 @@ private final Logger LOGGER=LoggerFactory.getLogger(this.getClass());
 	}
 
 	@Override
-	public List<ParentTask> getAllParentTasks() {
+	public Map<Long,String> getAllParentTasks() {
 		Iterable<ParentTask> iterableTask=parentTaskDao.findAll();
-		List<ParentTask> listTask=new ArrayList<ParentTask>();
-		iterableTask.spliterator().forEachRemaining(task->listTask.add(task));;
-		return listTask;
+		Map<Long,String> mapParentTask=new HashMap<Long,String>();		
+		iterableTask.spliterator().forEachRemaining(task->mapParentTask.put(task.getParentId(), task.getParentTask()));;
+		return mapParentTask;
 	}
 
 	
