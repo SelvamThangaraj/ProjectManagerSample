@@ -46,6 +46,7 @@ public class UserController {
 	}
 	
 	@PutMapping(path = "/user" ,consumes = "application/json", produces = "application/json")
+	@CrossOrigin(origins = "http://localhost:4200")
 	public ResponseEntity<User> updateUser(@RequestBody User user) {
 		LOGGER.debug("user=>"+user);
 		User updatedUser=userService.saveOrUpdateUser(user);
